@@ -35,12 +35,39 @@ sampleAlbums.push({
 /* end of hard-coded data */
 
 
+function handleSuccess(json) {
+  console.log(json);
+  renderAlbum(json);
+}
 
+function handleError(json) {
+  console.log(josn);
+}
 
 $(document).ready(function() {
   console.log('app.js loaded!');
-
+  console.log('about to render albums');
+  $.get('http://localhost:3000/api/albums')
+  .done(function(data) {
+    var kanyeAlbums = data;
+    kanyeAlbums.forEach(function(album) {
+      renderAlbum(album);
+    });
+  });
+  $("form").on("submit", function(event) {
+    event.preventDefault();
+    var formdata = $(this).serialize();
+    $.ajax({
+      method: "post",
+      url: "/api/albums",
+      data: formdata,
+      success: handleSuccess,
+      error: handleError
+    });
+    $(this).trigger("reset");
+  });
 });
+
 
 
 
@@ -65,15 +92,15 @@ function renderAlbum(album) {
   "                    <ul class='list-group'>" +
   "                      <li class='list-group-item'>" +
   "                        <h4 class='inline-header'>Album Name:</h4>" +
-  "                        <span class='album-name'>" + "HARDCODED ALBUM NAME" + "</span>" +
+  "                        <span class='album-name'>" + album.name + "</span>" +
   "                      </li>" +
   "                      <li class='list-group-item'>" +
   "                        <h4 class='inline-header'>Artist Name:</h4>" +
-  "                        <span class='artist-name'>" +  "HARDCODED ARTIST NAME"+ "</span>" +
+  "                        <span class='artist-name'>" + album.artistName + "</span>" +
   "                      </li>" +
   "                      <li class='list-group-item'>" +
   "                        <h4 class='inline-header'>Released date:</h4>" +
-  "                        <span class='album-releaseDate'>" + "HARDCODED ALBUM RELEASE" + "</span>" +
+  "                        <span class='album-releaseDate'>" + album.releaseDate + "</span>" +
   "                      </li>" +
   "                    </ul>" +
   "                  </div>" +
@@ -90,5 +117,5 @@ function renderAlbum(album) {
   "          <!-- end one album -->";
 
   // render to the page with jQuery
-
+  $("#albums").append(albumHtml);
 }
