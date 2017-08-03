@@ -9,29 +9,29 @@
 /* hard-coded data! */
 var sampleAlbums = [];
 sampleAlbums.push({
-             artistName: 'Ladyhawke',
-             name: 'Ladyhawke',
-             releaseDate: '2008, November 18',
-             genres: [ 'new wave', 'indie rock', 'synth pop' ]
-           });
+ artistName: 'Ladyhawke',
+ name: 'Ladyhawke',
+ releaseDate: '2008, November 18',
+ genres: [ 'new wave', 'indie rock', 'synth pop' ]
+});
 sampleAlbums.push({
-             artistName: 'The Knife',
-             name: 'Silent Shout',
-             releaseDate: '2006, February 17',
-             genres: [ 'synth pop', 'electronica', 'experimental' ]
-           });
+ artistName: 'The Knife',
+ name: 'Silent Shout',
+ releaseDate: '2006, February 17',
+ genres: [ 'synth pop', 'electronica', 'experimental' ]
+});
 sampleAlbums.push({
-             artistName: 'Juno Reactor',
-             name: 'Shango',
-             releaseDate: '2000, October 9',
-             genres: [ 'electronic', 'goa trance', 'tribal house' ]
-           });
+ artistName: 'Juno Reactor',
+ name: 'Shango',
+ releaseDate: '2000, October 9',
+ genres: [ 'electronic', 'goa trance', 'tribal house' ]
+});
 sampleAlbums.push({
-             artistName: 'Philip Wesley',
-             name: 'Dark Night of the Soul',
-             releaseDate: '2008, September 12',
-             genres: [ 'piano' ]
-           });
+ artistName: 'Philip Wesley',
+ name: 'Dark Night of the Soul',
+ releaseDate: '2008, September 12',
+ genres: [ 'piano' ]
+});
 /* end of hard-coded data */
 
 
@@ -41,7 +41,7 @@ function handleSuccess(json) {
 }
 
 function handleError(json) {
-  console.log(josn);
+  console.log(json);
 }
 
 $(document).ready(function() {
@@ -54,6 +54,7 @@ $(document).ready(function() {
       renderAlbum(album);
     });
   });
+
   $("form").on("submit", function(event) {
     event.preventDefault();
     var formdata = $(this).serialize();
@@ -66,11 +67,30 @@ $(document).ready(function() {
     });
     $(this).trigger("reset");
   });
-  $('#albums').on('click', '.add-song', function(e) {
-  console.log('fdsafdsafdsa');
+
+  $('#albums').on('click', '.add-song', function(event) {
   var id= $(this).parents('.album').data('album-id');
-  console.log('id', id);
-  $('#songModal').data('album-id', id).modal();
+  $('#songModal').data('album-id', id);
+  $('#songModal').modal();
+  });
+
+  $('#saveSong').on('click', function handleNewSongSubmit(event) {
+    event.preventDefault();
+    var songName = $('#songName').val();
+    var trackNumber = $('#trackNumber').val();
+    console.log(songName);
+    console.log(trackNumber);
+    var songToAjax = {
+      name: songName,
+      trackNumber: trackNumber
+    };
+    var id= $(this).parents('.modal').data('album-id');
+    console.log(id);
+    $.post("/api/albums/" + id + "/songs", songToAjax);
+    console.log(songToAjax);
+    $('#songModal').modal('hide');
+    $('#songName').val("");
+    $('#trackNumber').val("");
   });
 });
 

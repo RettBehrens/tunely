@@ -84,10 +84,29 @@ app.get('/api/albums', function album_index(req, res){
   });
 });
 
+app.get('/api/albums/:id', function song_to_album(req, res) {
+  db.Album.findOne({ _id: req.params.id }, function(err, album) {
+    res.json(album);
+  });
+});
+
 app.post('/api/albums', function album_add(req, res) {
   req.body.genres = req.body.genres.split(', ');
   db.Album.create(req.body, function(err, album) {
     res.json(album);
+  });
+});
+
+app.post('/api/albums/:album_id/songs', function song_add(req, res) {
+  console.log(req.params.album_id);
+  db.Album.findOne({ _id: req.params.album_id }, function(err, album) {
+    album.songs.push({
+      name: req.body.name,
+      trackNumber: req.body.trackNumber
+    });
+    album.save();
+    res.json(album);
+    db.Song.create(req.body);
   });
 });
 
